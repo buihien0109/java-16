@@ -4,7 +4,6 @@ import com.example.jparelationship.entity.FileServer;
 import com.example.jparelationship.entity.User;
 import com.example.jparelationship.repository.FileServerRepository;
 import com.example.jparelationship.repository.UserRepository;
-import com.example.jparelationship.response.FileResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +44,7 @@ public class FileServerService {
         fileServerRepository.delete(fileServer);
     }
 
-    public FileServer uploadFile(Integer userId, MultipartFile file) {
+    public String uploadFile(Integer userId, MultipartFile file) {
         validateFile(file);
 
         // Upload file
@@ -63,7 +62,7 @@ public class FileServerService {
 
             fileServerRepository.save(fileServer);
 
-            return fileServer;
+            return "/api/v1/files/" + fileServer.getId();
         } catch (IOException e) {
             throw new RuntimeException("Lỗi khi upload file");
         }

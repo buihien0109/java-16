@@ -6,10 +6,11 @@ import com.example.jparelationship.entity.User;
 import com.example.jparelationship.repository.CustomerRepository;
 import com.example.jparelationship.repository.OrderRepository;
 import com.example.jparelationship.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +49,33 @@ class JpaRelationshipApplicationTests {
         customerRepository.deleteById(1);
     }
 
+    // Cách 1:
+    @Test
+    void add_customer() {
+        // TODO : Kiểm tra xem tại sao khi lưu customer và order mà customer_id = null
+        Customer customer = Customer.builder()
+                .name("customer 7")
+                .build();
+
+        List<Order> orderList = new ArrayList<>();
+        for (int j = 0; j < 3; j++) {
+            Order order = Order.builder()
+                    .orderNumber(j + 1)
+                    .customer(customer)
+                    .build();
+            orderList.add(order);
+        }
+
+        customer.setOrders(orderList);
+        customerRepository.save(customer);
+    }
+
+    // Cách 2:
     @Test
     @Transactional
-    void add_customer() {
+    @Rollback(value = false)
+    void add_customer_2() {
+        // TODO : Kiểm tra xem tại sao khi lưu customer và order mà customer_id = null
         List<Order> orderList = new ArrayList<>();
         for (int j = 0; j < 3; j++) {
             Order order = Order.builder()
@@ -59,28 +84,31 @@ class JpaRelationshipApplicationTests {
             orderList.add(order);
         }
 
-        // TODO : Kiểm tra xem tại sao khi lưu customer và order mà customer_id = null
         Customer customer = Customer.builder()
-                .name("customer 7")
-                .orders(orderList)
+                .name("customer 10")
+                .orders(new ArrayList<>())
                 .build();
-
+        orderList.forEach(order -> customer.addOrder(order));
         customerRepository.save(customer);
     }
 
     @Test
     @Transactional
     void demo_removal() {
-        Customer customer = customerRepository.findById(2).orElse(null);
-        List<Order> orderList = customer.getOrders();
+        Customer customer = customerRepository.findById(3).orElse(null);
+        System.out.println("Customer Name : " + customer.getName());
 
         // TODO : Tại sao khi xóa 1 phần khỏi list không remove khỏi cơ sở dữ liệu?
-        System.out.println(orderList.get(0));
-        orderList.remove(orderList.get(0));
+        List<Order> orderList = customer.getOrders();
+        System.out.println("Size : "  + orderList.size());
+        orderList.forEach(order -> System.out.println(order.getOrderNumber()));
+        System.out.println("Trước khi xóa");
+//        orderList.remove(orderList.get(0));
+        customer.removeOrder(orderList.get(0));
+        System.out.println("Sau khi xóa");
     }
 
     @Test
-    @Transactional
     void demo_fetch_type() {
         Customer customer = customerRepository.findById(2).orElse(null);
 
