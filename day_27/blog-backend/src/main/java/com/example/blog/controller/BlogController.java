@@ -43,19 +43,12 @@ public class BlogController {
     // Tạo bài viết
     @GetMapping("/admin/blogs/create")
     public String getBlogCreatePage(Model model) {
-        List<CategoryPublic> categoryList = categoryService.getAllCategory();
-        model.addAttribute("categoryList", categoryList);
         return "admin/blog/blog-create";
     }
 
     // Chi tiết bài viết
     @GetMapping("/admin/blogs/{id}/detail")
     public String getBlogDetailPage(@PathVariable Integer id, Model model) {
-        BlogPublic blog = blogService.getBlogById(id);
-        List<CategoryPublic> categoryList = categoryService.getAllCategory();
-
-        model.addAttribute("blog", blog);
-        model.addAttribute("categoryList", categoryList);
         return "admin/blog/blog-detail";
     }
 }
