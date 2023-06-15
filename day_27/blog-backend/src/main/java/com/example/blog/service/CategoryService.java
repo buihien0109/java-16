@@ -12,5 +12,12 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class CategoryService {
+    private final CategoryRepository categoryRepository;
 
+    public List<CategoryPublic> getAllCategory() {
+        List<Category> categoryList = categoryRepository.findAll();
+        return categoryList.stream()
+                .map(category -> CategoryPublic.of(category))
+                .collect(Collectors.toList());
+    }
 }

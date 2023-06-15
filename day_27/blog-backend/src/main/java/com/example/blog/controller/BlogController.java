@@ -43,12 +43,40 @@ public class BlogController {
     // Tạo bài viết
     @GetMapping("/admin/blogs/create")
     public String getBlogCreatePage(Model model) {
+        List<CategoryPublic> categoryList = categoryService.getAllCategory();
+        model.addAttribute("categoryList", categoryList);
         return "admin/blog/blog-create";
     }
 
     // Chi tiết bài viết
     @GetMapping("/admin/blogs/{id}/detail")
     public String getBlogDetailPage(@PathVariable Integer id, Model model) {
+        BlogPublic blog = blogService.getBlogById(id);
+        List<CategoryPublic> categoryList = categoryService.getAllCategory();
+
+        model.addAttribute("blog", blog);
+        model.addAttribute("categoryList", categoryList);
         return "admin/blog/blog-detail";
     }
+
+    // Danh sách API
+    // 1. Tạo bài viết
+    @PostMapping("/api/v1/admin/blogs")
+    public ResponseEntity<?> createBlog(@RequestBody UpsertBlogRequest request) {
+        return new ResponseEntity<>(blogService.createBlog(request), HttpStatus.CREATED); // 201
+    }
+
+    // 2. Cập nhật bài viết
+    @PutMapping("/api/v1/admin/blogs/{id}")
+    public ResponseEntity<?> updateBlog(@PathVariable Integer id, @RequestBody UpsertBlogRequest request) {
+        return ResponseEntity.ok(blogService.updateBlog(id, request)); // 200
+    }
+
+    // 3. Xóa bài viết
+    @DeleteMapping("/api/v1/admin/blogs/{id}")
+    public ResponseEntity<?> deleteBlog(@PathVariable Integer id) {
+        blogService.deleteBlog(id);
+        return ResponseEntity.noContent().build(); // 204
+    }
+
 }
