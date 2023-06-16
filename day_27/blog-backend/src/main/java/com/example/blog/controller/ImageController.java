@@ -17,14 +17,21 @@ import java.util.List;
 public class ImageController {
     private final ImageService imageService;
 
-    // 1. Upload file
+    // 1. Lấy danh sách file của user đang login
+    @GetMapping()
+    public ResponseEntity<?> deleteFile() {
+        List<Image> imageList = imageService.getFilesOfUser();
+        return ResponseEntity.ok(imageList);
+    }
+
+    // 2. Upload file
     @PostMapping("")
     public ResponseEntity<?> uploadFile(@ModelAttribute("file") MultipartFile file) {
         Image image = imageService.uploadFile(file);
-        return new ResponseEntity<>(imageService, HttpStatus.CREATED);
+        return new ResponseEntity<>(image, HttpStatus.CREATED);
     }
 
-    // 2. Xem thông tin file
+    // 3. Xem thông tin file
     @GetMapping("{id}")
     public ResponseEntity<?> readFile(@PathVariable Integer id) {
         Image image = imageService.readFile(id);
@@ -34,18 +41,11 @@ public class ImageController {
                 .body(image.getData());
     }
 
-    // 3. Xóa file
+    // 4. Xóa file
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteFile(@PathVariable Integer id) {
         imageService.deleteFile(id);
         return ResponseEntity.noContent().build();
-    }
-
-    // 4. Lấy danh sách file của user đang login
-    @GetMapping()
-    public ResponseEntity<?> deleteFile() {
-        List<Image> imageList = imageService.getFilesOfUser();
-        return ResponseEntity.ok(imageList);
     }
 }
 
