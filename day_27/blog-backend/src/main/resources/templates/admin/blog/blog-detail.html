@@ -10,6 +10,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css"/>
 
         <link rel="stylesheet" th:href="@{/admin-lte/plugins/select2/css/select2.min.css}"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.min.css"
+              integrity="sha512-K1k7jSn9RDKEcn/ugqVVvWYu0bcS3q1w6m/5pQSnrj0bCfIqF6Wk49lkmckSb4wglvTP9V17LtS0q0XxYccXbg=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
         <link rel="stylesheet" th:href="@{/admin-lte/dist/css/style.css}">
 
         <style>
@@ -26,6 +30,11 @@
             .image-item {
                 height: 150px;
                 border: 2px solid #eee;
+            }
+
+            .image-item.selected {
+                border-color: #28a745!important;
+                border-width: 4px !important;
             }
 
             .image-item img {
@@ -191,7 +200,11 @@
     <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
 
     <script th:src="@{/admin-lte/plugins/select2/js/select2.full.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.min.js"
+            integrity="sha512-GzbaI5EsNzdEUq6/2XLYpr1y9CUZRIVsUeWTAFgULtQa5jZ3Nug8i0nZKM6jp9NffBCZhymPPQFcF0DK+JkRpw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <script th:src="@{/assets/js/blog-detail.js}"></script>
     <script th:inline="javascript">
         const blog = /*[[${blog}]]*/;
         console.log(blog);
