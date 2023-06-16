@@ -1,8 +1,11 @@
 <!doctype html>
-<html lang=vi xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/layout :: main-fragment(~{:: title}, ~{}, ~{:: main}, ~{})}">
+<html lang=vi xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/layout :: main-fragment(~{:: title}, ~{:: #css}, ~{:: main}, ~{:: #javascript})}">
 
 <head>
     <title th:text="${blog.title}">Hướng dẫn tạo tài khoản và sử dụng Chat GPT chỉ với 1 cốc trà đá | Kong's Blog</title>
+    <th:block id="css">
+        <link rel="stylesheet" th:href="@{/assets/lib/prism.css}">
+    </th:block>
 </head>
 
 <body id="top">
@@ -13,10 +16,17 @@
                 <div class="post-meta"><span th:text="${#temporals.format(blog.publishedAt, 'dd/MM/yyyy')}">01/02/2023</span></div>
             </header>
             <div class="post-content">
-                <p th:text="${blog.content}">Dạo này Chat GPT đang rất hot, được thần thành hóa lên quá khiến nhiều người lo sợ nó sẽ mất công việc của mình. Vậy Chat GPT cụ thể là gì, dùng như nào?</p>
+                <md-block>
+                    <th:block th:text="${blog.content}"></th:block>
+                </md-block>
             </div>
         </article>
     </main>
 </body>
+
+<th:block id="javascript">
+    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
+    <script th:src="@{/assets/lib/prism.js}"></script>
+</th:block>
 
 </html>
