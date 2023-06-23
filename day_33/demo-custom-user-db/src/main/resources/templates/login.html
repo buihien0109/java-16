@@ -5,24 +5,41 @@
     <title>Title</title>
 </head>
 <body>
-<!--<form th:action="@{/login}" method="post">-->
-<!--  <label>Username</label>-->
-<!--  <input type="text" name="username">  <br>-->
 
-<!--  <label>Password</label>-->
-<!--  <input type="password" name="password">  <br>-->
+<label>Email</label>
+<input type="text" id="email">  <br>
 
-<!--  <button type="submit">Login</button>-->
-<!--</form>-->
+<label>Password</label>
+<input type="password" id="password">  <br>
 
-<form th:action="@{/login-process}" method="post">
-    <label>Username</label>
-    <input type="text" name="email">  <br>
+<button id="btn-login">Login</button>
 
-    <label>Password</label>
-    <input type="password" name="pass">  <br>
+<script>
+    const emailEl = document.getElementById("email");
+    const passwordEl = document.getElementById("password");
+    const btnLogin = document.getElementById("btn-login");
 
-    <button type="submit">Login</button>
-</form>
+    btnLogin.addEventListener("click", async () => {
+        try {
+            const request = {
+                email : emailEl.value,
+                password : passwordEl.value
+            }
+            const data = await fetch("/api/v1/auth/login-handle", {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify(request)
+            })
+            if(data.status == 200) {
+                alert("Login success");
+                window.location.href = "/"
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    })
+</script>
 </body>
 </html>

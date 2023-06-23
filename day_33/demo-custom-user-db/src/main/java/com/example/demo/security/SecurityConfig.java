@@ -47,7 +47,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        String[] PUBLIC_ROUTE = {"/", "/api/v1/auth/**"};
+        String[] PUBLIC_ROUTE = {"/", "/api/v1/auth/**", "/login"};
         http
                 .csrf(c -> c.disable())
                 .authorizeHttpRequests((authz) -> authz
