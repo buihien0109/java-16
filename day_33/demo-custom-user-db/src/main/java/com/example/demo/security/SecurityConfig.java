@@ -1,13 +1,16 @@
 package com.example.demo.security;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -16,18 +19,29 @@ import org.springframework.security.web.SecurityFilterChain;
         securedEnabled = true,
         jsr250Enabled = true
 )
+@AllArgsConstructor
 public class SecurityConfig {
+    private final UserDetailsService userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         String[] PUBLIC_ROUTE = {"/"};
         http
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(PUBLIC_ROUTE).permitAll()
-                        .requestMatchers("POST", "/cc").hasRole("ADMIN")
-                        .requestMatchers("/profile").hasAnyRole("ADMIN", "AUTHOR")
-                        .requestMatchers("/admin", "/abc", "/xyz").hasRole("ADMIN")
-                        .requestMatchers("/author", "/bb/**").hasRole("AUTHOR")
-                        .requestMatchers("/cc").hasAuthority("ROLE_SALE")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -43,25 +57,9 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)
                         .permitAll()
-                );
+                )
+                .authenticationProvider(authenticationProvider());
 
         return http.build();
     }
-
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("111")
-                .roles("USER", "ADMIN")
-                .build();
-
-        UserDetails author = User.withDefaultPasswordEncoder()
-                .username("author")
-                .password("111")
-                .roles("USER", "AUTHOR")
-                .build();
-        return new InMemoryUserDetailsManager(admin, author);
-    }
-
 }
