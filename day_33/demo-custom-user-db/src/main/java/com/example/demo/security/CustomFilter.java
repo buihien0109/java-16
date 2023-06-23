@@ -31,6 +31,7 @@ public class CustomFilter extends OncePerRequestFilter {
         log.info("email = {}", userEmail);
         if (userEmail == null) {
             filterChain.doFilter(request, response);
+            return;
         }
 
         // Lấy ra thông tin của user

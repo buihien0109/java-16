@@ -24,7 +24,7 @@ public class WebController {
 
     @GetMapping("/login")
     public String getLoginPage(Authentication authentication) {
-        if(authentication != null) {
+        if(authentication != null && authentication.isAuthenticated()) {
             return "redirect:/";
         }
         return "login";
