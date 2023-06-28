@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "token_confirm")
 public class TokenConfirm {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

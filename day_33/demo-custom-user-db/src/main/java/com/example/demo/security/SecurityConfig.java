@@ -52,7 +52,10 @@ public class SecurityConfig {
                 "/api/v1/auth/**",
                 "/login",
                 "/forgot-password",
-                "/api/send-email"
+                "/api/send-email",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/doi-mat-khau/{token}"
         };
         http
                 .csrf(c -> c.disable())
